@@ -159,6 +159,8 @@ class BasalGanglia(Network):
         input_bias=0.0,
         ampa_config=None,
         gaba_config=None,
+        le = 0.2,
+        lg = 0.2,
         **kwargs
     ):
         if "net" in kwargs:
@@ -220,8 +222,7 @@ class BasalGanglia(Network):
 
             self.input = Node(label="input", size_in=dimensions)
             self.output = Node(label="output", size_in=dimensions)
-            self.le = 0.2
-            self.lg = 0.2
+            
 
 
             # add bias input (BG performs best in the range 0.5--1.5)
@@ -236,13 +237,13 @@ class BasalGanglia(Network):
                 self.input,
                 self.strD1.input,
                 synapse=None,
-                transform=Weights.ws * (1 + self.lg),
+                transform=Weights.ws * (1 + lg),
             )
             Connection(
                 self.input,
                 self.strD2.input,
                 synapse=None,
-                transform=Weights.ws * (1 - self.le),
+                transform=Weights.ws * (1 - le),
             )
             Connection(self.input, self.stn.input, synapse=None, transform=Weights.wt)
 
