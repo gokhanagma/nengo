@@ -155,11 +155,11 @@ class BasalGanglia(Network):
         self,
         dimensions,
         n_neurons_per_ensemble=100,
-        output_weight=-3.0,
+        output_weight=1,
         input_bias=0.0,
         ampa_config=None,
         gaba_config=None,
-        **kwargs,
+        **kwargs
     ):
         if "net" in kwargs:
             raise ObsoleteError("The 'net' argument is no longer supported.")
@@ -220,6 +220,9 @@ class BasalGanglia(Network):
 
             self.input = Node(label="input", size_in=dimensions)
             self.output = Node(label="output", size_in=dimensions)
+            self.le = 0.2
+            self.lg = 0.2
+
 
             # add bias input (BG performs best in the range 0.5--1.5)
             if abs(input_bias) > 0.0:
@@ -233,13 +236,13 @@ class BasalGanglia(Network):
                 self.input,
                 self.strD1.input,
                 synapse=None,
-                transform=Weights.ws * (1 + Weights.lg),
+                transform=Weights.ws * (1 + self.lg),
             )
             Connection(
                 self.input,
                 self.strD2.input,
                 synapse=None,
-                transform=Weights.ws * (1 - Weights.le),
+                transform=Weights.ws * (1 - self.le),
             )
             Connection(self.input, self.stn.input, synapse=None, transform=Weights.wt)
 
@@ -319,7 +322,7 @@ class Thalamus(Network):
         n_neurons_per_ensemble=50,
         mutual_inhib=1.0,
         threshold=0.0,
-        **kwargs,
+        **kwargs
     ):
         if "net" in kwargs:
             raise ObsoleteError("The 'net' argument is no longer supported.")
